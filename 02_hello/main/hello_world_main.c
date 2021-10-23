@@ -11,12 +11,13 @@
 #include "freertos/task.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
-
+#include "driver/uart.h"
 
 void app_main()
 {
-    printf("Hello world!\n");
-
+    uart_set_baudrate(0,115200);
+    printf("Hello esp32!\n");
+ 
     /* Print chip information */
     esp_chip_info_t chip_info;
     esp_chip_info(&chip_info);
@@ -29,8 +30,8 @@ void app_main()
             (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
 
     for (int i = 10; i >= 0; i--) {
-        printf("Restarting in %d seconds...\n", i);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        //printf("Restarting in %d seconds...\n", i);
+        vTaskDelay(100);
     }
     printf("Restarting now.\n");
     fflush(stdout);
