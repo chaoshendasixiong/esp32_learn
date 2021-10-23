@@ -1,8 +1,8 @@
-# freertos 驱动 wsb2812 
+# freertos 驱动 ws2812 
 
 [api文档](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/api-reference/index.html)
 
-硬件：一个12位的 WSB2812 5050 RGB Led 全彩
+硬件：一个12位的 WS2812 5050 RGB Led 全彩
 
 * DI	控制输入
 * 5v    电源
@@ -11,7 +11,7 @@
 
 引脚介绍如上 只需要一个单片机引脚就能控制
 
-复制03_led -> 04_wsb2812 我们将通过2种方式来驱动led工作
+复制03_led -> 04_ws2812 我们将通过2种方式来驱动led工作
 
 | T0H  | 0  高电平 | 0.4us  |
 | ---- | --------- | ------ |
@@ -63,13 +63,17 @@ static inline void delay_ns(uint32_t tick) {
 
 ## gpio 
 
-根据上面的表格可以知道传输1个bit（0或者1）需要1.25us 
+通过高低电平的时长 来模拟0或者1 根据上面的表格可以知道传输1个bit（0或者1）需要1.25us 
 
 1个tick是12.5ns
 
+
+
 ## spi
 
+通过gpio的方式需要高主频的cpu 所以并不可靠
 
+spi方式最好0或者1可以通过spi总线发送0xC0（11000000b）、0xFC（11111100b） 较为稳定
 
 
 

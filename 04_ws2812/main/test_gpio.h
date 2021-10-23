@@ -1,35 +1,19 @@
-/* Hello World Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_system.h"
-#include "esp_log.h"
-#include "esp_spi_flash.h"
-#include "nvs.h"
-#include "nvs_flash.h"
+#ifndef __h__test_gpio_h__
+#define __h__test_gpio_h__
 #include "rom/gpio.h"
 #include "driver/gpio.h"
-#include "driver/uart.h"
 
 #define BLINK_GPIO 13 // 对应 nodemcu 的D7 通信
 #define GPIO_OUTPUT_PIN_SEL  (1ULL<<BLINK_GPIO)  // 配置GPIO_OUT位寄存器
 
-static inline void delay_ns(uint32_t delta) {
-    uint32_t cycleCount;
-    uint32_t waitUntil;
-    __asm__ __volatile__("rsr     %0, ccount":"=a" (waitUntil));
-    waitUntil += delta;
+static inline void delay_ns(uint32_t tick) {
+    uint32_t cur_tick;
+    uint32_t delay_tick;
+    __asm__ __volatile__("rsr     %0, ccount":"=a" (delay_tick));
+    delay_tick += tick;
     do {
-        __asm__ __volatile__("rsr     %0, ccount":"=a" (cycleCount));
-    } while(waitUntil > cycleCount);
+        __asm__ __volatile__("rsr     %0, ccount":"=a" (cur_tick));
+    } while(delay_tick > cur_tick);
 }
 
 #define DELAY400  delay_ns(40);
@@ -69,7 +53,7 @@ void send_byte(unsigned char color) {
     } 
 }
 
-void blink_task1(void *args) {
+void blink_task(void *args) {
     gpio_config_t io_conf;
     io_conf.intr_type = GPIO_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_OUTPUT;
@@ -91,11 +75,5 @@ void blink_task1(void *args) {
     }
 }
 
-void app_main() {
-    uart_set_baudrate(0,115200);
-    printf("Hello esp32 !\n");
-    ESP_ERROR_CHECK(nvs_flash_init());
-   
-    blink_task1(NULL);
-}
- 
+
+#endif
