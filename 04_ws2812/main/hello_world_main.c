@@ -23,9 +23,10 @@
 
 void app_main() {
     uart_set_baudrate(0,115200);
-    printf("Hello esp32 !\n");
     ESP_ERROR_CHECK(nvs_flash_init());
-   
+    vTaskDelay(1000/portTICK_PERIOD_MS);
+    printf("Hello esp3 --- !\n");  
     blink_task(NULL);
+    //test();
 }
  

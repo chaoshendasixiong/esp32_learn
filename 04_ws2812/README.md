@@ -24,11 +24,11 @@
 
 ets_delay_us()（在 rom/ets_sys.h 中定义）是微妙级别
 
-所以要用别的方法实现纳秒延迟
+所以要用别的方法实现纳秒延迟 我们可以通过不断计算时钟tick或者使用nop()消耗一个tick实现忙等延迟
 
-不断计算时钟tick或者使用nop()实现忙等延迟
+**注意暂停中断和上下文切换带来的影响(portDISABLE_INTERRUPTS portENABLE_INTERRUPTS来禁止)**
 
-注意暂停中断和上下文切换带来的影响(portDISABLE_INTERRUPTS portENABLE_INTERRUPTS来禁止)
+通过 esp_clk_cpu_freq() 这个接口可以得到 cpu 的时钟频率 
 
 ```
 // esp8266 有个叫 ccount 的32位寄存器 不断计算时钟tick
@@ -63,9 +63,9 @@ static inline void delay_ns(uint32_t tick) {
 
 ## gpio 
 
-通过高低电平的时长 来模拟0或者1 根据上面的表格可以知道传输1个bit（0或者1）需要1.25us 
+通过高低电平的时长 来模拟0或者1 
 
-1个tick是12.5ns
+通常gpio的翻转达不到ns级别 
 
 
 
@@ -73,7 +73,21 @@ static inline void delay_ns(uint32_t tick) {
 
 通过gpio的方式需要高主频的cpu 所以并不可靠
 
+使用SPI的MOSI来输出高低电平 缺点是要用1个字节来模拟2812的1个bit码型(同时包含高和低电平)
+
+设定CLK的频率为8Mhz 发送一个码型(8bit*1/8)
+
+ws2812发送1位要1.25us 
+
 spi方式最好0或者1可以通过spi总线发送0xC0（11000000b）、0xFC（11111100b） 较为稳定
+
+spi是同步的方式 因此有个CLK时钟线 
+
+全双工的 因此有2根线 mosi miso
+
+主从模式 一主多从 有根CS(chip select)片选线 用于寻址
+
+总线的高地电平设置由极性和相位决定 4种工作模式
 
 
 
