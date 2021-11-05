@@ -88,9 +88,9 @@ void mydebug(uint8_t *buf) {
         sendBuffer(dev);
     }
     break; 
-    case 3: scrollV(dev, 0, 7, SPEED_2); break;
-    case 4: scrollV(dev, 2, 7, SPEED_25); break;
-    case 5: scrollH(dev, 1, 4, SPEED_2); break;
+    case 3: scrollV(dev, 1); break;
+    case 4: scrollV(dev, 2); break;
+    case 5: scrollV(dev, 4); break;
     case 6: scrollH(dev, 2, 7, SPEED_2); break;
     case 7: sendBuffer(dev); break;
     default:

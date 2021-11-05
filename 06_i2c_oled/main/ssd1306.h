@@ -207,15 +207,16 @@ void scrollH(ssd1306_t *dev, uint8_t pageTop, uint8_t pageBottom, uint8_t frame)
 
     ssd1306_command(dev, 0x2F);     
 }
-
-void scrollV(ssd1306_t *dev, uint8_t pageTop, uint8_t pageBottom, uint8_t frame) {
+// speed 1~64
+// page start and page end set 0x00 
+void scrollV(ssd1306_t *dev, uint8_t speed) {
     ssd1306_command(dev, 0x2E);
     ssd1306_command(dev, 0x2A);
     ssd1306_command(dev, 0x00); // dummy 00
-    ssd1306_command(dev, pageTop&0x07); // page start
-    ssd1306_command(dev, frame); // delta frame
-    ssd1306_command(dev, pageBottom&0x07); // page end
-    ssd1306_command(dev, 0x01); // offset
+    ssd1306_command(dev, 0x00); // page start
+    ssd1306_command(dev, 0x00); // delta frame
+    ssd1306_command(dev, 0x00); // page end
+    ssd1306_command(dev, speed); // offset
 
     ssd1306_command(dev, 0xA3); 
     ssd1306_command(dev, 0);      
