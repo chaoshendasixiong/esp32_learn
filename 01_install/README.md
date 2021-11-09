@@ -32,3 +32,16 @@ export IDF_PATH=$HOME/esp32/ESP8266_RTOS_SDK
 
 硬件我自己买的是 esp8266-12F wifi 模块 NodeMCU CH340，其它包含 usb 数据线，杜邦线
 
+esp01s 烧录参数 dout 1MB =8mbit
+
+esp12f QIO  4MB=32Mbit
+
+基于乐鑫方案的ESP8266选择QIO,ESP8285选择DOUT
+
+Flash 常用的工作模式有 4 种：DOUT/DIO/QOUT/QIO
+\* DOUT:地址为 1 线模式输入，数据为 2 线模式输出
+\* DIO：地址为 2 线模式输入，数据为 2 线模式输出
+\* QOUT：地址为 1 线模式输入，数据为 4 线模式输出
+\* QIO：地址为 4 线模式输入，数据为 4 线模式输出
+
+用户如果需要使用 QIO 模式，则需要在选择 Flash 时确认该 Flash 是否支持 QIO 模式
