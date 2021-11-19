@@ -17,8 +17,9 @@
 #include "nvs_flash.h"
 #include "rom/gpio.h"
 #include "driver/gpio.h"
+#include "mybutton.h"
  
-
+#define BUTTON_GPIO 4
 #define BLINK_GPIO 2
 void blink_task1(void *args) {
     gpio_pad_select_gpio(BLINK_GPIO);//选择一个GPIO
@@ -49,12 +50,22 @@ void blink_task2(void *args) {
     }
 }
 
+void blink_button_task(void *args) {
+    gpio_pad_select_gpio(BLINK_GPIO);//选择一个GPIO
+    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);//把这个GPIO作为输出
+    while (1) {
+        gpio_set_level(BLINK_GPIO, myButton_state(BUTTON_GPIO));  
+        vTaskDelay(10 / portTICK_RATE_MS); 
+    }
+}
+
 void app_main()
 {
     printf("Hello esp32 !\n");
     ESP_ERROR_CHECK(nvs_flash_init());
+    myButton_init(BUTTON_GPIO);
     //blink_task1(NULL);
     //blink_task2(NULL);
     //xTaskCreate(&blink_task1, "blink_task1", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
-    xTaskCreate(&blink_task2, "blink_task2", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
+    xTaskCreate(&blink_button_task, "blink_task2", configMINIMAL_STACK_SIZE, NULL, 5, NULL);
 }
